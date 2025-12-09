@@ -181,7 +181,7 @@ const App: React.FC = () => {
              <div className="relative z-10">
                  <h1 className="text-4xl font-black mb-2 tracking-tight uppercase">Fight the System</h1>
                  <p className="text-gray-400 mb-8 max-w-2xl font-mono text-sm">
-                   <span className="text-rebel-red">>></span> Real-time enforcement intel. Avoid tickets. Reclaim your campus parking.
+                   <span className="text-rebel-red">&gt;&gt;</span> Real-time enforcement intel. Avoid tickets. Reclaim your campus parking.
                  </p>
                  
                  <div className="flex flex-col sm:flex-row gap-3">
