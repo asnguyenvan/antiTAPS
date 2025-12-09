@@ -1,0 +1,7 @@
+{
+  "name": "antiTAPS",
+  "description": "Rebellious parking tracker for UF. Avoid tickets, find spots.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
