@@ -172,7 +172,7 @@ const App: React.FC = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         {/* Header Section */}
-        <div className="relative bg-gradient-to-r from-black to-gray-900 rounded-xl p-8 text-white border border-gray-800 shadow-2xl mb-8 group">
+        <div className="relative z-20 bg-gradient-to-r from-black to-gray-900 rounded-xl p-8 text-white border border-gray-800 shadow-2xl mb-8 group">
              {/* Abstract Decor - Clipped in separate container */}
              <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
                  <div className="absolute top-0 right-0 -mt-10 -mr-10 w-60 h-60 bg-rebel-red opacity-10 rounded-full blur-3xl group-hover:opacity-20 transition-opacity duration-700"></div>
