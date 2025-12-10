@@ -155,42 +155,47 @@ const App: React.FC = () => {
       <nav className="sticky top-0 z-30 bg-black/90 border-b border-rebel-red backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3">
+            <button 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-rebel-red rounded-lg p-1 -ml-1 transition-opacity hover:opacity-80"
+              aria-label="Scroll to top"
+            >
               <div className="bg-rebel-red p-1.5 rounded-md shadow-[0_0_15px_rgba(220,38,38,0.5)]">
-                <Skull className="w-6 h-6 text-black" />
+                <Skull className="w-6 h-6 text-black" aria-hidden="true" />
               </div>
               <span className="text-white font-bold text-xl tracking-tighter uppercase font-mono">anti<span className="text-rebel-red">TAPS</span></span>
-            </div>
+            </button>
             {/* Simple Time Display */}
-            <div className="hidden md:block text-gray-400 text-xs font-mono">
+            <div className="hidden md:block text-gray-400 text-xs font-mono" aria-label="System Time">
                SYS_TIME: {new Date().toLocaleTimeString()}
             </div>
           </div>
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" role="main">
         
         {/* Header Section */}
         <div className="relative z-20 bg-gradient-to-r from-black to-gray-900 rounded-xl p-8 text-white border border-gray-800 shadow-2xl mb-8 group">
              {/* Abstract Decor - Clipped in separate container */}
-             <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
+             <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none" aria-hidden="true">
                  <div className="absolute top-0 right-0 -mt-10 -mr-10 w-60 h-60 bg-rebel-red opacity-10 rounded-full blur-3xl group-hover:opacity-20 transition-opacity duration-700"></div>
              </div>
              
              <div className="relative z-10">
                  <h1 className="text-4xl font-black mb-2 tracking-tight uppercase">Fight the System</h1>
                  <p className="text-gray-400 mb-8 max-w-2xl font-mono text-sm">
-                   <span className="text-rebel-red">&gt;&gt;</span> Real-time enforcement intel. Avoid tickets. Reclaim your campus parking.
+                   <span className="text-rebel-red" aria-hidden="true">&gt;&gt;</span> Real-time enforcement intel. Avoid tickets. Reclaim your campus parking.
                  </p>
                  
                  <div className="flex flex-col sm:flex-row gap-3">
                     <div className="relative flex-1">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" aria-hidden="true" />
                       <input 
                         type="text" 
                         placeholder="Search target sector..." 
-                        className="w-full pl-10 pr-4 py-3 rounded-lg text-white bg-gray-800 border border-gray-700 focus:outline-none focus:border-rebel-red focus:ring-1 focus:ring-rebel-red transition-all placeholder-gray-600 font-mono text-sm"
+                        aria-label="Search target sector"
+                        className="w-full pl-10 pr-4 py-3 rounded-lg text-white bg-gray-800 border border-gray-700 focus:outline-none focus:border-rebel-red focus:ring-1 focus:ring-rebel-red transition-all placeholder-gray-500 font-mono text-sm"
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
                       />
@@ -201,26 +206,33 @@ const App: React.FC = () => {
                         <div className="relative min-w-[180px] flex-1 sm:flex-none" ref={filterRef}>
                           <button
                             onClick={() => setIsFilterOpen(!isFilterOpen)}
-                            className={`w-full pl-10 pr-4 py-3 rounded-lg text-white bg-gray-800 border transition-all duration-200 flex items-center justify-between
+                            aria-haspopup="true"
+                            aria-expanded={isFilterOpen}
+                            aria-label="Filter by permit type"
+                            className={`w-full pl-10 pr-4 py-3 rounded-lg text-white bg-gray-800 border transition-all duration-200 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-rebel-red
                               ${isFilterOpen ? 'border-rebel-red ring-1 ring-rebel-red bg-gray-800' : 'border-gray-700 hover:border-gray-600 hover:bg-gray-700/50'}`}
                           >
                             <div className="flex items-center gap-2 overflow-hidden">
-                              <Filter className="w-4 h-4 text-gray-500 absolute left-3" />
+                              <Filter className="w-4 h-4 text-gray-400 absolute left-3" aria-hidden="true" />
                               <span className="font-mono text-sm truncate">{filterType === PermitType.ANY ? 'All Permits' : filterType}</span>
                             </div>
-                            <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-200 flex-shrink-0 ${isFilterOpen ? 'rotate-180' : ''}`} />
+                            <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 flex-shrink-0 ${isFilterOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
                           </button>
 
                           {isFilterOpen && (
-                            <div className="absolute top-full left-0 right-0 mt-2 bg-[#111827] border border-gray-700 rounded-lg shadow-2xl z-[100] overflow-hidden py-1 max-h-80 overflow-y-auto">
+                            <div 
+                              className="absolute top-full left-0 right-0 mt-2 bg-[#111827] border border-gray-700 rounded-lg shadow-2xl z-[100] overflow-hidden py-1 max-h-80 overflow-y-auto"
+                              role="menu"
+                            >
                               {Object.values(PermitType).map((t) => (
                                 <button
                                   key={t}
+                                  role="menuitem"
                                   onClick={() => {
                                     setFilterType(t);
                                     setIsFilterOpen(false);
                                   }}
-                                  className={`w-full text-left px-4 py-2.5 text-sm font-mono transition-colors flex items-center justify-between group
+                                  className={`w-full text-left px-4 py-2.5 text-sm font-mono transition-colors flex items-center justify-between group focus:outline-none focus:bg-gray-800
                                     ${filterType === t ? 'text-white bg-rebel-red/10 border-l-2 border-rebel-red' : 'text-gray-400 hover:bg-gray-800 hover:text-white border-l-2 border-transparent'}`}
                                 >
                                   <span className="truncate">{t === PermitType.ANY ? 'All Permits' : t}</span>
@@ -234,26 +246,29 @@ const App: React.FC = () => {
                         {/* Near Me Toggle */}
                         <button 
                             onClick={handleNearMeClick}
-                            className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-mono text-sm font-bold transition-all border
+                            aria-pressed={sortByDistance}
+                            aria-label="Find parking near my location"
+                            className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-3 rounded-lg font-mono text-sm font-bold transition-all border focus:outline-none focus:ring-2 focus:ring-rebel-red
                             ${sortByDistance 
                                 ? 'bg-rebel-red text-white border-rebel-red shadow-[0_0_10px_rgba(220,38,38,0.5)]' 
                                 : 'bg-gray-800 text-gray-300 border-gray-700 hover:border-gray-500'}`}
                         >
-                            <Navigation className={`w-4 h-4 ${sortByDistance ? 'fill-current' : ''}`} />
+                            <Navigation className={`w-4 h-4 ${sortByDistance ? 'fill-current' : ''}`} aria-hidden="true" />
                             <span className="whitespace-nowrap hidden sm:inline">{sortByDistance ? 'Near Me' : 'Find Near Me'}</span>
-                            <span className="sm:hidden"><Navigation className="w-4 h-4"/></span>
                         </button>
 
                         {/* Favorites Toggle */}
                         <button 
                             onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-                            className={`flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-mono text-sm font-bold transition-all border
+                            aria-pressed={showFavoritesOnly}
+                            aria-label={showFavoritesOnly ? "Show all lots" : "Show priority targets only"}
+                            className={`flex items-center justify-center gap-2 px-3 sm:px-4 py-3 rounded-lg font-mono text-sm font-bold transition-all border focus:outline-none focus:ring-2 focus:ring-rebel-red
                             ${showFavoritesOnly 
                                 ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/50 shadow-[0_0_10px_rgba(234,179,8,0.2)]' 
                                 : 'bg-gray-800 text-gray-300 border-gray-700 hover:border-gray-500 hover:text-white'}`}
                             title="Show Priorities Only"
                         >
-                            <Star className={`w-4 h-4 ${showFavoritesOnly ? 'fill-current' : ''}`} />
+                            <Star className={`w-4 h-4 ${showFavoritesOnly ? 'fill-current' : ''}`} aria-hidden="true" />
                         </button>
                     </div>
                  </div>
@@ -261,43 +276,43 @@ const App: React.FC = () => {
         </div>
 
         {/* Tactical Intel / Tips Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-            <div className="bg-black border border-gray-800 p-5 rounded-xl shadow-lg hover:border-gray-700 transition-colors">
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10" aria-label="Parking Tips">
+            <article className="bg-black border border-gray-800 p-5 rounded-xl shadow-lg hover:border-gray-700 transition-colors">
                 <div className="flex items-center gap-3 mb-3">
-                    <Clock className="w-5 h-5 text-rebel-red" />
+                    <Clock className="w-5 h-5 text-rebel-red" aria-hidden="true" />
                     <h3 className="font-bold text-white uppercase tracking-wider text-sm">The 4:30 Lift</h3>
                 </div>
                 <p className="text-gray-400 text-xs leading-relaxed font-mono">
                     Most Red/Orange restrictions lift at <span className="text-white font-bold">4:30 PM</span>. If you arrive at 4:20 PM, wait. TAPS patrols heavily right before the buzzer to catch early arrivals.
                 </p>
-            </div>
+            </article>
             
-            <div className="bg-black border border-gray-800 p-5 rounded-xl shadow-lg hover:border-gray-700 transition-colors">
+            <article className="bg-black border border-gray-800 p-5 rounded-xl shadow-lg hover:border-gray-700 transition-colors">
                 <div className="flex items-center gap-3 mb-3">
-                    <Siren className="w-5 h-5 text-rebel-red" />
+                    <Siren className="w-5 h-5 text-rebel-red" aria-hidden="true" />
                     <h3 className="font-bold text-white uppercase tracking-wider text-sm">The Weekend Trap</h3>
                 </div>
                 <p className="text-gray-400 text-xs leading-relaxed font-mono">
                     Most lots are lifted on weekends, but <span className="text-white font-bold">Garage 5</span> is CLOSED. Also, "Service Drives" and "Brown" lots are enforced 24/7, even on Sundays.
                 </p>
-            </div>
+            </article>
 
-            <div className="bg-black border border-gray-800 p-5 rounded-xl shadow-lg hover:border-gray-700 transition-colors">
+            <article className="bg-black border border-gray-800 p-5 rounded-xl shadow-lg hover:border-gray-700 transition-colors">
                 <div className="flex items-center gap-3 mb-3">
-                    <Zap className="w-5 h-5 text-rebel-red" />
+                    <Zap className="w-5 h-5 text-rebel-red" aria-hidden="true" />
                     <h3 className="font-bold text-white uppercase tracking-wider text-sm">Flashers = Targets</h3>
                 </div>
                 <p className="text-gray-400 text-xs leading-relaxed font-mono">
                     Hazard lights are not a "pause button." They act as a beacon for TAPS. Never leave your car unattended in a fire lane or bus loop, even for "just a minute."
                 </p>
-            </div>
-        </div>
+            </article>
+        </section>
 
         {/* Lots Grid */}
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-bold text-white flex items-center gap-3 uppercase tracking-wider">
             {showFavoritesOnly ? 'Priority Targets' : filterType === PermitType.ANY ? 'Surveillance List' : filterType === PermitType.NO_DECAL ? 'Safe Zones' : `${filterType} Sectors`}
-            <span className="text-xs font-mono text-gray-900 bg-rebel-red px-2 py-0.5 rounded font-bold">
+            <span className="text-xs font-mono text-gray-900 bg-rebel-red px-2 py-0.5 rounded font-bold" aria-label={`${filteredLots.length} results`}>
                 {filteredLots.length}
             </span>
           </h2>
@@ -316,10 +331,10 @@ const App: React.FC = () => {
           </div>
         ) : (
           <div className="text-center py-20 bg-gray-900/50 rounded-2xl border border-dashed border-gray-800">
-            <p className="text-gray-500 text-lg font-mono">No targets found matching criteria.</p>
+            <p className="text-gray-400 text-lg font-mono">No targets found matching criteria.</p>
             <button 
               onClick={() => {setFilterType(PermitType.ANY); setSearchInput(''); setSearchQuery(''); setSortByDistance(false); setShowFavoritesOnly(false);}}
-              className="mt-4 text-rebel-red hover:text-white transition-colors font-medium uppercase text-sm tracking-widest border-b border-rebel-red pb-1"
+              className="mt-4 text-rebel-red hover:text-white transition-colors font-medium uppercase text-sm tracking-widest border-b border-rebel-red pb-1 focus:outline-none focus:ring-2 focus:ring-rebel-red"
             >
               Reset Filters
             </button>
