@@ -165,8 +165,8 @@ const App: React.FC = () => {
     const all = Object.values(PermitType);
     const others = all.filter(t => t !== PermitType.ANY && t !== PermitType.NO_DECAL);
     
-    // Base order: All Permits, No Decal, then the rest
-    const baseOrder = [PermitType.ANY, PermitType.NO_DECAL, ...others];
+    // Base order: All Permits, then the rest (excluding No Decal)
+    const baseOrder = [PermitType.ANY, ...others];
     
     // If current filter is in the list, move it to the top.
     // Ensure we don't duplicate it if it's already at the top (e.g. if ANY is selected).
@@ -577,7 +577,7 @@ const App: React.FC = () => {
                                                     <button 
                                                         key={day} 
                                                         onClick={() => handleDateSelect(day)}
-                                                        className={`w-8 h-8 rounded flex items-center justify-center text-sm font-mono transition-colors
+                                                        className={`w-8 h-8 rounded flex items-center justify-center text-sm font-mono transition-colors mx-auto
                                                             ${isSelected ? 'bg-indigo-600 text-white font-bold shadow-sm' : 'text-gray-300 hover:bg-gray-800 hover:text-white'}`}
                                                         aria-label={`${day} ${calendarViewDate.toLocaleString('default', { month: 'long' })}`}
                                                         aria-pressed={isSelected}

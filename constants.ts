@@ -445,7 +445,7 @@ export const INITIAL_LOTS: ParkingLot[] = [
     location: 'Museum Rd',
     latitude: 29.6463,
     longitude: -82.3478,
-    enforcementHours: 'Paid Parking / Event Parking',
+    enforcementHours: 'M-F 7:30 AM - 4:30 PM',
     weekdayLifted: 'After 4:30 PM',
     weekendLifted: 'Varies',
     schedule: {
