@@ -160,6 +160,23 @@ const App: React.FC = () => {
     }
   }, [isSimulationMode, simDate, simTime]);
 
+  // Logic for sorting permit dropdown options
+  const sortedPermitTypes = useMemo(() => {
+    const all = Object.values(PermitType);
+    const others = all.filter(t => t !== PermitType.ANY && t !== PermitType.NO_DECAL);
+    
+    // Base order: All Permits, No Decal, then the rest
+    const baseOrder = [PermitType.ANY, PermitType.NO_DECAL, ...others];
+    
+    // If current filter is in the list, move it to the top.
+    // Ensure we don't duplicate it if it's already at the top (e.g. if ANY is selected).
+    if (filterType === baseOrder[0]) {
+        return baseOrder;
+    }
+    
+    return [filterType, ...baseOrder.filter(t => t !== filterType)];
+  }, [filterType]);
+
   const filteredLots = useMemo(() => {
     let processedLots = lots.map(lot => {
        // Calculate distance if user location is known
@@ -389,7 +406,7 @@ const App: React.FC = () => {
                               className="absolute top-full left-0 right-0 mt-2 bg-[#111827] border border-gray-700 rounded-lg shadow-2xl z-[100] overflow-hidden py-1 max-h-80 overflow-y-auto"
                               role="menu"
                             >
-                              {Object.values(PermitType).map((t) => (
+                              {sortedPermitTypes.map((t) => (
                                 <button
                                   key={t}
                                   role="menuitem"
@@ -684,11 +701,11 @@ const App: React.FC = () => {
 
             <article className="bg-black border border-gray-800 p-5 rounded-xl shadow-lg hover:border-gray-700 transition-colors">
                 <div className="flex items-center gap-3 mb-3">
-                    <Calendar className="w-5 h-5 text-rebel-red" aria-hidden="true" />
-                    <h3 className="font-bold text-white uppercase tracking-wider text-sm">Weekend Logic</h3>
+                    <AlertTriangle className="w-5 h-5 text-rebel-red" aria-hidden="true" />
+                    <h3 className="font-bold text-white uppercase tracking-wider text-sm">Verify Signage</h3>
                 </div>
                 <p className="text-gray-300 text-xs leading-relaxed font-mono">
-                    Most lots are lifted on weekends. However, "Service Drives" and specific 24/7 reserved spaces are always enforced.
+                    Always verify physical signage at the lot entrance. Rules change due to events or construction. Do not rely solely on this app for enforcement data.
                 </p>
             </article>
 

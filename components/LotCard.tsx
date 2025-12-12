@@ -25,6 +25,10 @@ const LotCard: React.FC<LotCardProps> = ({ lot, isFavorite, onToggleFav, simulat
   const status = getEnforcementState(lot, simulatedDate);
   const mapUrl = `http://maps.apple.com/?daddr=${lot.latitude},${lot.longitude}`;
 
+  // Determine highlight color based on status
+  // If "Safe Zone" (Lifted), use green highlight. Otherwise (Enforced/Closed/Risk), use red/warning highlight.
+  const activeRowClass = status === EnforcementState.LIFTED ? 'bg-emerald-500/20' : 'bg-rebel-red/10';
+
   const handleOpenModal = (e: React.MouseEvent) => {
     e.preventDefault();
     triggerRef.current = e.currentTarget as HTMLElement;
@@ -235,50 +239,47 @@ const LotCard: React.FC<LotCardProps> = ({ lot, isFavorite, onToggleFav, simulat
           {/* 1. Status Banner */}
           {renderStatusBanner()}
 
-          {/* 2. Schedule (Re-designed for scannability) */}
+          {/* 2. Schedule (Re-designed for scannability, borderless) */}
           <div className="mb-6 relative z-20">
               <div className="w-full flex justify-between items-center mb-2 p-1 -ml-1">
                   <div className="flex items-center gap-2 text-gray-300">
                       <Clock className="w-4 h-4 text-gray-400" aria-hidden="true" />
-                      <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">Weekly Schedule</h3>
+                      <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400">Schedule</h4>
                   </div>
                   <div className="flex items-center gap-2">
                       {getStatusBadge()}
                   </div>
               </div>
               
-              <div className="bg-gray-800/40 rounded-lg overflow-hidden border border-gray-700/50 backdrop-blur-sm">
+              <ul className="space-y-1 mt-2">
                   {/* Mon-Fri */}
-                  <div className={`flex justify-between items-center px-4 py-2.5 border-b border-gray-700/30 ${isWeekday ? 'bg-rebel-red/10' : 'bg-transparent'}`}>
+                  <li className={`flex justify-between items-center px-2 py-2 rounded ${isWeekday ? activeRowClass : 'bg-transparent'}`}>
                       <div className="flex items-center gap-2.5">
-                          <span className={`w-1.5 h-1.5 rounded-full ${isWeekday ? 'bg-rebel-red shadow-[0_0_5px_rgba(220,38,38,0.8)]' : 'bg-gray-600'}`}></span>
-                          <span className={`text-xs font-bold uppercase tracking-wider ${isWeekday ? 'text-white' : 'text-gray-400'}`}>Mon - Fri</span>
+                          <span className={`text-sm font-bold uppercase tracking-wider ${isWeekday ? 'text-white' : 'text-gray-400'}`}>M-F</span>
                       </div>
-                      <span className={`text-xs font-mono font-medium ${isWeekday ? 'text-white' : 'text-gray-400'}`}>{lot.schedule?.monFri}</span>
-                  </div>
+                      <span className={`text-sm font-mono font-bold ${isWeekday ? 'text-white' : 'text-gray-400'}`}>{lot.schedule?.monFri}</span>
+                  </li>
 
                   {/* Saturday */}
-                  <div className={`flex justify-between items-center px-4 py-2.5 border-b border-gray-700/30 ${currentDay === 6 ? 'bg-rebel-red/10' : 'bg-transparent'}`}>
+                  <li className={`flex justify-between items-center px-2 py-2 rounded ${currentDay === 6 ? activeRowClass : 'bg-transparent'}`}>
                       <div className="flex items-center gap-2.5">
-                           <span className={`w-1.5 h-1.5 rounded-full ${currentDay === 6 ? 'bg-rebel-red shadow-[0_0_5px_rgba(220,38,38,0.8)]' : 'bg-gray-600'}`}></span>
-                          <span className={`text-xs font-bold uppercase tracking-wider ${currentDay === 6 ? 'text-white' : 'text-gray-400'}`}>Saturday</span>
+                          <span className={`text-sm font-bold uppercase tracking-wider ${currentDay === 6 ? 'text-white' : 'text-gray-400'}`}>Sat</span>
                       </div>
-                      <span className={`text-xs font-mono font-medium ${lot.schedule?.sat === 'Closed' ? 'text-red-400 font-bold' : (currentDay === 6 ? 'text-white' : 'text-gray-400')}`}>
+                      <span className={`text-sm font-mono font-bold ${lot.schedule?.sat === 'Closed' ? 'text-red-400' : (currentDay === 6 ? 'text-white' : 'text-gray-400')}`}>
                           {lot.schedule?.sat}
                       </span>
-                  </div>
+                  </li>
 
                   {/* Sunday */}
-                  <div className={`flex justify-between items-center px-4 py-2.5 ${currentDay === 0 ? 'bg-rebel-red/10' : 'bg-transparent'}`}>
+                  <li className={`flex justify-between items-center px-2 py-2 rounded ${currentDay === 0 ? activeRowClass : 'bg-transparent'}`}>
                       <div className="flex items-center gap-2.5">
-                          <span className={`w-1.5 h-1.5 rounded-full ${currentDay === 0 ? 'bg-rebel-red shadow-[0_0_5px_rgba(220,38,38,0.8)]' : 'bg-gray-600'}`}></span>
-                          <span className={`text-xs font-bold uppercase tracking-wider ${currentDay === 0 ? 'text-white' : 'text-gray-400'}`}>Sunday</span>
+                          <span className={`text-sm font-bold uppercase tracking-wider ${currentDay === 0 ? 'text-white' : 'text-gray-400'}`}>Sun</span>
                       </div>
-                      <span className={`text-xs font-mono font-medium ${lot.schedule?.sun === 'Closed' ? 'text-red-400 font-bold' : (currentDay === 0 ? 'text-white' : 'text-gray-400')}`}>
+                      <span className={`text-sm font-mono font-bold ${lot.schedule?.sun === 'Closed' ? 'text-red-400' : (currentDay === 0 ? 'text-white' : 'text-gray-400')}`}>
                           {lot.schedule?.sun}
                       </span>
-                  </div>
-              </div>
+                  </li>
+              </ul>
 
               {/* Game Day Info Alert */}
               {lot.gameDayInfo && (
@@ -303,15 +304,17 @@ const LotCard: React.FC<LotCardProps> = ({ lot, isFavorite, onToggleFav, simulat
           <div className="mt-auto pt-5 border-t border-gray-800">
               <div className="flex items-center gap-2 mb-3">
                   <Tag className="w-4 h-4 text-gray-400" aria-hidden="true" />
-                  <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">Required Permits</h3>
+                  <h4 className="text-xs font-bold uppercase tracking-widest text-gray-400">Required Permits</h4>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <ul className="flex flex-wrap gap-2">
                   {lot.permitTypes.map(p => (
-                      <span key={p} className="px-3 py-1 bg-zinc-800 text-gray-100 text-xs font-mono font-bold rounded border border-gray-600 shadow-sm tracking-wide">
-                          {p}
-                      </span>
+                      <li key={p}>
+                        <span className="px-3 py-1 bg-zinc-800 text-gray-100 text-xs font-mono font-bold rounded border border-gray-600 shadow-sm tracking-wide block">
+                            {p}
+                        </span>
+                      </li>
                   ))}
-              </div>
+              </ul>
           </div>
         </div>
       </article>
