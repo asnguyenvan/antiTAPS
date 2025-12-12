@@ -1,32 +1,75 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { ParkingLot, getEnforcementState, EnforcementState } from '../types';
-import { MapPin, AlertTriangle, ShieldCheck, Ban, Clock, Navigation, Star, Timer, Tag } from 'lucide-react';
+import { MapPin, AlertTriangle, ShieldCheck, Ban, Clock, Navigation, Star, Timer, Tag, Trophy } from 'lucide-react';
 
 interface LotCardProps {
   lot: ParkingLot;
   isFavorite: boolean;
   onToggleFav: (id: string) => void;
+  simulatedDate?: Date;
 }
 
-const LotCard: React.FC<LotCardProps> = ({ lot, isFavorite, onToggleFav }) => {
+const LotCard: React.FC<LotCardProps> = ({ lot, isFavorite, onToggleFav, simulatedDate }) => {
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   const abortButtonRef = useRef<HTMLButtonElement>(null);
+  const proceedButtonRef = useRef<HTMLButtonElement>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
   
-  const status = getEnforcementState(lot);
+  // Use the simulated date if provided, otherwise default to "now" is handled inside the function
+  const now = simulatedDate || new Date();
+  const currentDay = now.getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
+  const isWeekday = currentDay >= 1 && currentDay <= 5;
+
+  const status = getEnforcementState(lot, simulatedDate);
   const mapUrl = `http://maps.apple.com/?daddr=${lot.latitude},${lot.longitude}`;
 
-  // Handle Escape key to close modal
+  const handleOpenModal = (e: React.MouseEvent) => {
+    e.preventDefault();
+    triggerRef.current = e.currentTarget as HTMLElement;
+    setIsMapModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsMapModalOpen(false);
+    // Restore focus to the trigger element
+    triggerRef.current?.focus();
+  };
+
+  // Handle Focus Trap and Escape
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (isMapModalOpen && e.key === 'Escape') {
-        setIsMapModalOpen(false);
+      if (!isMapModalOpen) return;
+
+      if (e.key === 'Escape') {
+        handleCloseModal();
+      }
+
+      if (e.key === 'Tab') {
+        const focusableElements = modalRef.current?.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (!focusableElements) return;
+
+        const firstElement = focusableElements[0] as HTMLElement;
+        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
       }
     };
 
     if (isMapModalOpen) {
       document.addEventListener('keydown', handleKeyDown);
-      // Trap focus or at least move focus to the first interactive element
+      // Trap focus
       requestAnimationFrame(() => {
         abortButtonRef.current?.focus();
       });
@@ -55,7 +98,7 @@ const LotCard: React.FC<LotCardProps> = ({ lot, isFavorite, onToggleFav }) => {
             <Timer className="w-5 h-5 text-amber-400 flex-shrink-0 animate-pulse mt-0.5" aria-hidden="true" />
             <div>
               <span className="font-bold text-sm text-amber-100 block tracking-wide uppercase">Closing Soon</span>
-              <span className="text-xs text-amber-200/90 font-medium">Enforcement imminent. Move car.</span>
+              <span className="text-xs text-amber-200 font-medium">Enforcement imminent. Move car.</span>
             </div>
           </div>
         );
@@ -65,7 +108,7 @@ const LotCard: React.FC<LotCardProps> = ({ lot, isFavorite, onToggleFav }) => {
             <ShieldCheck className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
             <div>
               <span className="font-bold text-sm text-emerald-100 block tracking-wide uppercase">Safe Zone</span>
-              <span className="text-xs text-emerald-200/90 font-medium">No decal required. Lifted.</span>
+              <span className="text-xs text-emerald-200 font-medium">No decal required. Lifted.</span>
             </div>
           </div>
         );
@@ -76,7 +119,7 @@ const LotCard: React.FC<LotCardProps> = ({ lot, isFavorite, onToggleFav }) => {
             <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
             <div>
               <span className="font-bold text-sm text-red-100 block tracking-wide uppercase">Enforced</span>
-              <span className="text-xs text-red-200/90 font-medium">Ticket risk: High.</span>
+              <span className="text-xs text-red-200 font-medium">Ticket risk: High.</span>
             </div>
           </div>
         );
@@ -181,10 +224,7 @@ const LotCard: React.FC<LotCardProps> = ({ lot, isFavorite, onToggleFav }) => {
         <div className="p-5 flex-1 flex flex-col">
           {/* Stretched Link - Accessible Card Action */}
           <a 
-            onClick={(e) => {
-              e.preventDefault();
-              setIsMapModalOpen(true);
-            }}
+            onClick={handleOpenModal}
             href={mapUrl}
             className="absolute inset-0 z-10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-rebel-red rounded-xl cursor-pointer"
             aria-label={`Open navigation options for ${lot.name}`}
@@ -195,31 +235,67 @@ const LotCard: React.FC<LotCardProps> = ({ lot, isFavorite, onToggleFav }) => {
           {/* 1. Status Banner */}
           {renderStatusBanner()}
 
-          {/* 2. Schedule */}
-          <div className="mb-6">
-              <div className="flex justify-between items-center mb-4">
+          {/* 2. Schedule (Re-designed for scannability) */}
+          <div className="mb-6 relative z-20">
+              <div className="w-full flex justify-between items-center mb-2 p-1 -ml-1">
                   <div className="flex items-center gap-2 text-gray-300">
                       <Clock className="w-4 h-4 text-gray-400" aria-hidden="true" />
-                      <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">Schedule</h3>
+                      <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">Weekly Schedule</h3>
                   </div>
-                  {getStatusBadge()}
+                  <div className="flex items-center gap-2">
+                      {getStatusBadge()}
+                  </div>
               </div>
               
-              <div className="grid grid-cols-[3.5rem_1fr] gap-y-3 font-mono text-sm">
-                  <div className="text-gray-400 font-bold">Sun</div>
-                  <div className={`text-right ${lot.schedule?.sun === 'Closed' ? 'text-red-400 font-bold' : 'text-white'}`}>
-                      {lot.schedule?.sun}
+              <div className="bg-gray-800/40 rounded-lg overflow-hidden border border-gray-700/50 backdrop-blur-sm">
+                  {/* Mon-Fri */}
+                  <div className={`flex justify-between items-center px-4 py-2.5 border-b border-gray-700/30 ${isWeekday ? 'bg-rebel-red/10' : 'bg-transparent'}`}>
+                      <div className="flex items-center gap-2.5">
+                          <span className={`w-1.5 h-1.5 rounded-full ${isWeekday ? 'bg-rebel-red shadow-[0_0_5px_rgba(220,38,38,0.8)]' : 'bg-gray-600'}`}></span>
+                          <span className={`text-xs font-bold uppercase tracking-wider ${isWeekday ? 'text-white' : 'text-gray-400'}`}>Mon - Fri</span>
+                      </div>
+                      <span className={`text-xs font-mono font-medium ${isWeekday ? 'text-white' : 'text-gray-400'}`}>{lot.schedule?.monFri}</span>
                   </div>
 
-                  <div className="text-gray-400 font-bold">M-F</div>
-                  <div className="text-right text-white font-medium">
-                      {lot.schedule?.monFri}
+                  {/* Saturday */}
+                  <div className={`flex justify-between items-center px-4 py-2.5 border-b border-gray-700/30 ${currentDay === 6 ? 'bg-rebel-red/10' : 'bg-transparent'}`}>
+                      <div className="flex items-center gap-2.5">
+                           <span className={`w-1.5 h-1.5 rounded-full ${currentDay === 6 ? 'bg-rebel-red shadow-[0_0_5px_rgba(220,38,38,0.8)]' : 'bg-gray-600'}`}></span>
+                          <span className={`text-xs font-bold uppercase tracking-wider ${currentDay === 6 ? 'text-white' : 'text-gray-400'}`}>Saturday</span>
+                      </div>
+                      <span className={`text-xs font-mono font-medium ${lot.schedule?.sat === 'Closed' ? 'text-red-400 font-bold' : (currentDay === 6 ? 'text-white' : 'text-gray-400')}`}>
+                          {lot.schedule?.sat}
+                      </span>
                   </div>
 
-                  <div className="text-gray-400 font-bold">Sat</div>
-                  <div className={`text-right ${lot.schedule?.sat === 'Closed' ? 'text-red-400 font-bold' : 'text-white'}`}>
-                      {lot.schedule?.sat}
+                  {/* Sunday */}
+                  <div className={`flex justify-between items-center px-4 py-2.5 ${currentDay === 0 ? 'bg-rebel-red/10' : 'bg-transparent'}`}>
+                      <div className="flex items-center gap-2.5">
+                          <span className={`w-1.5 h-1.5 rounded-full ${currentDay === 0 ? 'bg-rebel-red shadow-[0_0_5px_rgba(220,38,38,0.8)]' : 'bg-gray-600'}`}></span>
+                          <span className={`text-xs font-bold uppercase tracking-wider ${currentDay === 0 ? 'text-white' : 'text-gray-400'}`}>Sunday</span>
+                      </div>
+                      <span className={`text-xs font-mono font-medium ${lot.schedule?.sun === 'Closed' ? 'text-red-400 font-bold' : (currentDay === 0 ? 'text-white' : 'text-gray-400')}`}>
+                          {lot.schedule?.sun}
+                      </span>
                   </div>
+              </div>
+
+              {/* Game Day Info Alert */}
+              {lot.gameDayInfo && (
+                <div className="mt-3 p-2.5 rounded bg-amber-900/20 border border-amber-700/30 flex items-start gap-2.5">
+                    <Trophy className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <div className="space-y-1">
+                        <span className="text-[10px] font-bold text-amber-500 uppercase tracking-wider block">Game Day Protocol</span>
+                        <p className="text-[11px] text-gray-300 leading-snug font-mono">
+                            {lot.gameDayInfo}
+                        </p>
+                    </div>
+                </div>
+              )}
+
+              {/* Holiday Note */}
+              <div className="mt-2 text-[10px] text-gray-500 italic text-center px-2">
+                 * Holidays typically follow Sunday enforcement.
               </div>
           </div>
 
@@ -249,7 +325,10 @@ const LotCard: React.FC<LotCardProps> = ({ lot, isFavorite, onToggleFav }) => {
           aria-labelledby="modal-title"
           aria-describedby="modal-desc"
         >
-            <div className="bg-[#111827] border-2 border-rebel-red rounded-xl shadow-[0_0_30px_rgba(220,38,38,0.2)] max-w-md w-full m-auto overflow-hidden relative">
+            <div 
+                ref={modalRef}
+                className="bg-[#111827] border-2 border-rebel-red rounded-xl shadow-[0_0_30px_rgba(220,38,38,0.2)] max-w-md w-full m-auto overflow-hidden relative"
+            >
                 <div className="bg-rebel-red/10 p-4 border-b border-rebel-red/30 flex items-center gap-3">
                     <Navigation className="w-5 h-5 text-rebel-red" />
                     <h3 id="modal-title" className="text-white font-bold font-mono tracking-wider">INITIATE NAVIGATION?</h3>
@@ -261,16 +340,17 @@ const LotCard: React.FC<LotCardProps> = ({ lot, isFavorite, onToggleFav }) => {
                     <div className="flex gap-3 justify-end">
                         <button
                             ref={abortButtonRef}
-                            onClick={(e) => { e.stopPropagation(); setIsMapModalOpen(false); }}
+                            onClick={(e) => { e.stopPropagation(); handleCloseModal(); }}
                             className="px-4 py-2 rounded-lg border border-gray-600 text-gray-400 hover:text-white hover:bg-gray-800 font-mono text-xs font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400"
                         >
                             ABORT
                         </button>
                         <button
+                            ref={proceedButtonRef}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 window.open(mapUrl, '_blank');
-                                setIsMapModalOpen(false);
+                                handleCloseModal();
                             }}
                             className="px-4 py-2 rounded-lg bg-rebel-red text-black hover:bg-red-500 font-mono text-xs font-bold transition-colors shadow-[0_0_10px_rgba(220,38,38,0.4)] focus:outline-none focus:ring-2 focus:ring-red-400"
                         >
