@@ -240,7 +240,7 @@ const LotCard: React.FC<LotCardProps> = ({ lot, isFavorite, onToggleFav, simulat
           {renderStatusBanner()}
 
           {/* 2. Schedule (Re-designed for scannability, borderless) */}
-          <div className="mb-6 relative z-20">
+          <div className="mb-6">
               <div className="w-full flex justify-between items-center mb-2 p-1 -ml-1">
                   <div className="flex items-center gap-2 text-gray-300">
                       <Clock className="w-4 h-4 text-gray-400" aria-hidden="true" />
