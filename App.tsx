@@ -528,7 +528,7 @@ const App: React.FC = () => {
                     {isSimulationMode && (
                        <div className="mt-2 p-4 bg-indigo-950/40 border border-indigo-500/30 rounded-lg animate-in fade-in slide-in-from-top-2">
                           <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center justify-between">
-                              <div className="flex flex-1 gap-3">
+                              <div className="flex flex-col sm:flex-row flex-1 gap-3">
                                   
                                   {/* DATE PICKER */}
                                   <div className="relative flex-1" ref={datePickerRef}>
@@ -550,14 +550,14 @@ const App: React.FC = () => {
                                     {/* Custom Date Dropdown */}
                                     {showDatePicker && (
                                       <div 
-                                        className="absolute top-full left-0 mt-2 bg-[#111827] border border-gray-700 rounded-lg shadow-2xl z-[60] p-4 min-w-[280px]"
+                                        className="absolute top-full left-0 w-full mt-2 bg-[#111827] border border-gray-700 rounded-lg shadow-2xl z-[60] p-4"
                                         role="dialog"
                                         aria-label="Calendar Date Picker"
                                         aria-modal="true"
                                       >
                                          <div className="flex items-center justify-between mb-4">
                                             <button onClick={() => handleMonthChange(-1)} className="p-1 hover:bg-gray-800 rounded text-gray-400 hover:text-white" aria-label="Previous Month"><ChevronLeft className="w-4 h-4" /></button>
-                                            <span className="font-bold text-white text-sm" role="heading" aria-level={2}>
+                                            <span className="font-bold text-white text-sm flex-1 text-center" role="heading" aria-level={2}>
                                                 {calendarViewDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
                                             </span>
                                             <button onClick={() => handleMonthChange(1)} className="p-1 hover:bg-gray-800 rounded text-gray-400 hover:text-white" aria-label="Next Month"><ChevronRight className="w-4 h-4" /></button>
@@ -616,7 +616,7 @@ const App: React.FC = () => {
                                           aria-modal="true"
                                         >
                                             {/* Hours */}
-                                            <div className="flex-1 overflow-y-auto border-r border-gray-700/50 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
+                                            <div className="w-1/3 overflow-y-auto border-r border-gray-700/50 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
                                                 <div className="p-2 text-center text-[10px] text-gray-500 font-bold uppercase sticky top-0 bg-[#111827] z-10 border-b border-gray-800">Hour</div>
                                                 {hours.map(h => (
                                                     <button 
@@ -629,7 +629,7 @@ const App: React.FC = () => {
                                                 ))}
                                             </div>
                                             {/* Minutes */}
-                                            <div className="flex-1 overflow-y-auto border-r border-gray-700/50 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
+                                            <div className="w-1/3 overflow-y-auto border-r border-gray-700/50 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
                                                 <div className="p-2 text-center text-[10px] text-gray-500 font-bold uppercase sticky top-0 bg-[#111827] z-10 border-b border-gray-800">Minute</div>
                                                 {minutes.map(m => (
                                                     <button 
@@ -642,7 +642,7 @@ const App: React.FC = () => {
                                                 ))}
                                             </div>
                                             {/* AM/PM */}
-                                            <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
+                                            <div className="w-1/3 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
                                                 <div className="p-2 text-center text-[10px] text-gray-500 font-bold uppercase sticky top-0 bg-[#111827] z-10 border-b border-gray-800">Period</div>
                                                 {periods.map(p => (
                                                     <button 
