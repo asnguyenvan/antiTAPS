@@ -610,7 +610,7 @@ const App: React.FC = () => {
                                     {/* Custom Time Dropdown */}
                                     {showTimePicker && (
                                         <div 
-                                          className="absolute top-full left-0 right-0 sm:right-auto sm:w-[320px] mt-2 bg-[#111827] border border-gray-700 rounded-lg shadow-2xl z-[60] overflow-hidden flex h-60"
+                                          className="absolute top-full left-0 w-full mt-2 bg-[#111827] border border-gray-700 rounded-lg shadow-2xl z-[60] overflow-hidden flex h-60"
                                           role="dialog"
                                           aria-label="Time Picker"
                                           aria-modal="true"
