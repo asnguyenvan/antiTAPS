@@ -10,7 +10,9 @@ export enum PermitType {
   MEDICAL = 'Medical',
   PARK_AND_RIDE = 'Park & Ride',
   ANY = 'Any',
-  NO_DECAL = 'No Decal Required'
+  NO_DECAL = 'No Decal Required',
+  SILVER = 'Silver',
+  GOLD = 'Gold',
 }
 
 export enum OccupancyStatus {
