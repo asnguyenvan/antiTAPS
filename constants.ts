@@ -294,12 +294,12 @@ export const INITIAL_LOTS: ParkingLot[] = [
     latitude: 29.6397983,
     longitude: -82.3461001,
     enforcementHours: 'Paid Parking M-F',
-    weekdayLifted: 'Varies',
-    weekendLifted: 'Varies',
+    weekdayLifted: 'Lifted',
+    weekendLifted: 'Lifted',
     schedule: {
-        monFri: 'Paid Parking',
-        sat: 'Paid Parking',
-        sun: 'Paid Parking'
+        monFri: 'Paid Parking/Lifted after 4:30 PM',
+        sat: 'Lifted',
+        sun: 'Lifted'
     },
     status: OccupancyStatus.FULL,
     currentFill: 98,
@@ -484,16 +484,16 @@ export const INITIAL_LOTS: ParkingLot[] = [
     latitude: 29.6388317,
     longitude: -82.3480527,
     enforcementHours: 'Paid Parking M-F',
-    weekdayLifted: 'Varies',
-    weekendLifted: 'Varies',
+    weekdayLifted: 'Lifted',
+    weekendLifted: 'Lifted',
     schedule: {
-        monFri: 'Paid Parking',
-        sat: 'Paid Parking',
-        sun: 'Paid Parking'
+        monFri: 'Paid Parking/Lifted after 4:30 PM',
+        sat: 'Lifted',
+        sun: 'Lifted'
     },
     status: OccupancyStatus.FULL,
     currentFill: 98,
-    image: 'https://ufhealth.org/assets/images/stories/_1200x630_crop_center-center_82_line/Parking-Garage_MBF_IMG_9938.jpg' // Hospital/Medical buildings
+    image: 'https://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&w=900&h=600&pitch=-9.864960293891286&panoid=JyKV2HslXEFN2Cq_ImqFcw&yaw=171.1481098187846' // Hospital/Medical buildings
   },
   {
     id: '28',
@@ -503,16 +503,16 @@ export const INITIAL_LOTS: ParkingLot[] = [
     latitude: 29.6387735,
     longitude: -82.3493605,
     enforcementHours: 'Paid Parking M-F',
-    weekdayLifted: 'Varies',
-    weekendLifted: 'Varies',
+    weekdayLifted: 'Lifted',
+    weekendLifted: 'Lifted',
     schedule: {
-        monFri: 'Paid Parking',
-        sat: 'Paid Parking',
-        sun: 'Paid Parking'
+        monFri: 'Paid Parking/Lifted after 4:30 PM',
+        sat: 'Lifted',
+        sun: 'Lifted'
     },
     status: OccupancyStatus.FULL,
     currentFill: 98,
-    image: 'https://ufhealth.org/assets/images/stories/_1200x630_crop_center-center_82_line/Parking-Garage_MBF_IMG_9938.jpg' // Hospital/Medical buildings
+    image: 'https://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&w=900&h=600&pitch=0&panoid=CaKuj1MFgViEfN90UMBMIQ&yaw=78.50325' // Hospital/Medical buildings
   },
   {
     id: '29',
@@ -522,15 +522,15 @@ export const INITIAL_LOTS: ParkingLot[] = [
     latitude: 29.6397983,
     longitude: -82.3461001,
     enforcementHours: 'Paid Parking M-F',
-    weekdayLifted: 'Varies',
-    weekendLifted: 'Varies',
+    weekdayLifted: 'Lifted',
+    weekendLifted: 'Lifted',
     schedule: {
-        monFri: 'Paid Parking',
-        sat: 'Paid Parking',
-        sun: 'Paid Parking'
+        monFri: 'Paid Parking/Lifted after 4:30 PM',
+        sat: 'Lifted',
+        sun: 'Lifted'
     },
     status: OccupancyStatus.FULL,
     currentFill: 98,
-    image: 'https://ufhealth.org/assets/images/stories/_1200x630_crop_center-center_82_line/Parking-Garage_MBF_IMG_9938.jpg' // Hospital/Medical buildings
+    image: 'https://streetviewpixels-pa.googleapis.com/v1/thumbnail?cb_client=maps_sv.tactile&w=900&h=600&pitch=-4.001879706704003&panoid=E9g_pSL5oGj2DiTKvamTpA&yaw=17.665702572585303' // Hospital/Medical buildings
   },
 ];

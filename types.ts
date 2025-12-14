@@ -196,7 +196,11 @@ export const getEnforcementState = (lot: ParkingLot, customTime?: Date): Enforce
   // Shands (Garage 1) is a notable exception often enforced 24/7 or having separate rules.
   if (lot.enforcementHours.toLowerCase().includes('paid')) {
      // Hardcoded safety for Shands/Hospital areas which are aggressive
-     if (lot.id === '17') return EnforcementState.ENFORCED; 
+     // Garage 1 (id 17) logic: Lifted on weekends, Enforced otherwise (M-F)
+     if (lot.id === '17') {
+         if (isWeekend) return EnforcementState.LIFTED;
+         return EnforcementState.ENFORCED;
+     }
      
      // For others (Reitz/Welcome Center), lifted on holidays/weekends
      if (isWeekend || isHoliday) return EnforcementState.LIFTED; 
