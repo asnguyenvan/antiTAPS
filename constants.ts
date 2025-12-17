@@ -65,11 +65,11 @@ export const INITIAL_LOTS: ParkingLot[] = [
     location: 'Center Dr',
     latitude: 29.642272,
     longitude: -82.3519132,
-    enforcementHours: 'M-F 7:30 AM - 5:30 PM',
-    weekdayLifted: 'After 5:30 PM',
+    enforcementHours: 'M-F 7:30 AM - 3:30 PM',
+    weekdayLifted: 'After 3:30 PM',
     weekendLifted: 'All Day',
     schedule: {
-        monFri: '7:30 AM – 5:30 PM',
+        monFri: '7:30 AM – 3:30 PM',
         sat: 'Lifted',
         sun: 'Lifted'
     },
